@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="app">
+<head>
+  <meta charset="UTF-8">
+  <title>demo</title>
+  <link rel="stylesheet" href="bower_components/materialize/dist/css/materialize.css">
+  <style>
+    .box {
+      width: 300px;
+      height: 300px;
+      background-color: orange;
+    }
+    
+    body {
+      background-color: #efefef;
+    }
+    
+    .repeat {
+      min-height: 10vh;
+      margin-top: 200px;
+    }
+  </style>
+</head>
+<body ng-controller="MainController as Main">
+  <nav>
+    <div class="nav-wrapper">
+      <a href="#" class="brand-logo">ngAnimate</a>
+      <ul id="nav-mobile" class="right hide-on-med-and-down">
+      </ul>
+    </div>
+  </nav>
+  <main class="container">
+    <!-- START ng-if/show/hide -->
+    <div class="row">
+      <div class="col s6 offset-s4">
+        <h2>ng-if/show/hide <span>toggle = {{ toggle }}</span></h2>
+        <a class="btn waves-effect waves-teal" ng-click="toggle = !toggle">toggle</a>
+      </div>
+    </div>
+    
+    <div class="row">
+      <div class="col s4">
+        <!-- this box will animate on ng-hide -->
+        <div class="card orange fx-zoom-left fx-speed-1300" ng-hide="toggle">
+          <div class="card-title">
+            <h4>ng-hide</h4>
+          </div>
+        </div>
+      </div>
+      <div class="col s4">
+        <!-- this box will animate on ng-if -->
+        <div class="card blue-grey fx-fade-normal fx-speed-620" ng-if="toggle">
+          <div class="card-title">
+            <h4>ng-if</h4>
+          </div>
+        </div>
+      </div>
+      <div class="col s4">
+        <!-- this box will animate on ng-show -->
+        <div class="card indigo fx-bounce-up fx-speed-800" ng-show="toggle">
+          <div class="card-title">
+            <h4>ng-show</h4>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- END ng-if/show/hide -->
+    
+    <!-- START ng-repeat -->
+    <div class="row repeat">
+      <div class="row">
+        <div class="col s6 offset-s4">
+          <h2>ng-repeat</h2>
+        </div>
+      </div>
+      <div class="input-field col s6 offset-s4">
+        <input id="filter" type="text" ng-model="search">
+        <label for="filter">filter</label>
+      </div>
+    </div>
+    
+    <div class="row">
+      <div class="col s4 fx-zoom-up fx-speed-800" ng-repeat="num in Main.nums | filter:search">
+        <div class="card teal darken-2">
+          <div class="card-title">
+            <h4>{{ num.num }}</h4>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- END ng-repeat -->
+    
+    <!-- START custom trigger using $animate -->
+    <div class="row">
+      <div class="row">
+        <div class="col s6 offset-s4">
+          <h2>$animate service</h2>
+        </div>
+      </div>
+      
+      <div class="row">
+        <div class="col s4">
+          <div class="card teal fx-rotate-clock fx-speed-1500 fx-easing-back" hide-on-click>
+            <div class="card-title">
+              <h4>hide on click</h4>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col s4">
+          <div class="card teal fx-fade-down-big fx-speed-1500 fx-easing-back" hide-on-hover>
+            <div class="card-title">
+              <h4>hide-on-hover</h4>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- END custom trigger using $animate -->
+  </main>
+    
+  
+  <!-- uses the hide-on-click directive that on click uses $animate.leave -->
+  <!-- <div class="box fx-zoom-normal fx-easing-bounce fx-speed-1300" hide-on-click></div> -->
+  
+  
+  <script src="bower_components/jquery/dist/jquery.min.js"></script>
+  <script src="bower_components/gsap/src/minified/TweenMax.min.js"></script>
+  <script src="bower_components/angular/angular.min.js"></script>
+  <script src="bower_components/angular-animate/angular-animate.min.js"></script>
+  <script src="bower_components/ngFx/dist/ngFx.js"></script>
+  <script src="bower_components/materialize/dist/js/materialize.js"></script>
+  
+  <script>
+    angular.module('app', ['ngFx'])
+    .controller('MainController', function(){
+      this.nums = [];
+      
+      for(var i = 0; i < 10; i++){
+        this.nums.push({ num: i, date: Date.now() * i });
+      }
+    })
+    .directive('hideOnClick', function($animate){
+      return function(scope, ele){
+        ele.on('click', function(){
+          // make sure there is a css class on the element that uses
+          // $animate
+          $animate.leave(ele);
+          scope.$apply();
+        });
+      };
+    })
+    .directive('hideOnHover', function($animate){
+      return function(scope, ele){
+        ele.on('mouseenter', function(){
+          // make sure there is a css class on the element that uses
+          // $animate
+          $animate.leave(ele);
+          scope.$apply();
+        });
+      };
+    });
+  </script>
+</body>
+</html>
